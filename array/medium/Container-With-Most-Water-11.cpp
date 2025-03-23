@@ -10,7 +10,7 @@ int main()
     int size = sizeof(height) / sizeof(height[0]); // Số lượng phần tử
 
     // Gọi hàm maxArea và in kết quả
-    int result = maxAreaTwo(height, size);
+    int result = maxArea(height, size);
     printf("❤️  Diện tích chứa nước lớn nhất: %d\n", result);
 
     return 0;
@@ -49,7 +49,6 @@ int maxAreaTwo(int *height, int heightSize)
         int minHeight = height[left] < height[right] ? height[left] : height[right];
         int width = right - left;
         int area = minHeight * width;
-        printf("%d\n", area);
 
         if (area > maxWater)
         {
@@ -60,12 +59,10 @@ int maxAreaTwo(int *height, int heightSize)
         if (height[left] < height[right])
         {
             left++;
-            printf("L");
         }
         else
         {
             right--;
-            printf("R");
         }
     }
 

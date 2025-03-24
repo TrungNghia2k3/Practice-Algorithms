@@ -59,15 +59,19 @@ string bfs(pair<int, int> start, pair<int, int> end)
 int main()
 {
     ifstream inp("inpMC.txt"); // Mở file inpMC.txt để đọc dữ liệu.
+    
     if (!inp.is_open())
     {
         // Kiểm tra xem file đã được mở thành công hay không. Nếu không, xuất thông báo lỗi và kết thúc chương trình với mã lỗi 1.
         cout << "Error opening file" << endl;
         return 1;
     }
+
     ofstream out("outMC.txt"); // Mở file outMC.txt để ghi kết quả.
     inp >> M >> N;             // Đọc kích thước ma trận mê cung (M, N).
+
     bool hasOpenCell = false;
+
     for (int i = 0; i < M; i++)
     {
         // Đọc ma trận mê cung từ file.
@@ -75,12 +79,15 @@ int main()
         for (int j = 0; j < N; j++)
         {
             inp >> maze[i][j];
+            // Kiểm tra nếu có ít nhất một ô 'O' trong mê cung, đặt hasOpenCell = true
             if (maze[i][j] == 'O')
             {
                 hasOpenCell = true;
             }
         }
     }
+
+    // Nếu không có ô 'O' nào trong mê cung, ghi "NO" vào file kết quả và kết thúc chương trình
     if (!hasOpenCell)
     {
         out << "NO\n";
@@ -88,8 +95,10 @@ int main()
         out.close();
         return 0;
     }
+
     int K;
     inp >> K; // Đọc số lượng truy vấn K.
+
     while (K--)
     {
         // Lặp qua mỗi truy vấn:
@@ -99,15 +108,27 @@ int main()
         // Ngược lại, thực hiện BFS và ghi kết quả vào file kết quả.
         int a, b, c, d;
         inp >> a >> b >> c >> d;
-        if (a < 0 || a >= M || b < 0 || b >= N || c < 0 || c >= M || d < 0 || d >= N || maze[a][b] == 'X' || maze[c][d] == 'X')
+
+        // Kiểm tra điều kiện ngoài phạm vi ma trận
+        // a, b, c, d phải nằm trong phạm vi hợp lệ 0 ≤ a, c < M và 0 ≤ b, d < N
+        // Kiểm tra điều kiện ô xuất phát hoặc ô đích là tường ('X'):
+        // Nếu điểm bắt đầu hoặc điểm kết thúc nằm trên ô 'X' (tường), robot không thể đi → ghi "NO" vào file kết quả
+        
+        if (a < 0 || a >= M 
+            || b < 0 || b >= N 
+            || c < 0 || c >= M 
+            || d < 0 || d >= N 
+            || maze[a][b] == 'X' || maze[c][d] == 'X')
         {
             out << "NO\n";
         }
+        // Nếu điểm bắt đầu và điểm kết thúc hợp lệ, thực hiện BFS để kiểm tra xem có đường đi từ điểm bắt đầu đến điểm kết thúc hay không.
+        // Nếu có, ghi "YES" vào file kết quả, ngược lại ghi "NO" vào file kết quả.
         else
         {
             for (int i = 0; i < M; i++)
                 for (int j = 0; j < N; j++)
-                    visited[i][j] = false;
+                    visited[i][j] = false; // Đặt lại mảng về false để chuẩn bị tìm kiếm đường đi mới
             out << bfs({a, b}, {c, d}) << "\n";
         }
     }

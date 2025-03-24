@@ -6,21 +6,37 @@
 
 using namespace std;
 
+/* Min Heap */
+
+// Heapify là quá trình biến một cây nhị phân bất kỳ thành một Heap.
+// Quá trình này có thể được thực hiện từ dưới lên trên hoặc từ trên xuống dưới.
+// Đối với mỗi nút, ta so sánh với các nút con và hoán đổi chúng nếu cần thiết cho đến khi cây thỏa mãn tính chất Heap.
+
+/*
+arr: mảng đại diện cho Heap
+n: Kích thước của Heap
+i: Chỉ số của node cần kiêmr tra
+*/
+
 void heapify(vector<int> &arr, int n, int i)
 {
-    int smallest = i;
-    int leftChild = 2 * i + 1;
-    int rightChild = 2 * i + 2;
+    int smallest = i;           // Giả sử node i là nhỏ nhất
+    int leftChild = 2 * i + 1;  // Chỉ số của nút con trái
+    int rightChild = 2 * i + 2; // Chỉ số của nút con phải
 
+    // Kiểm tra xem nút con trái có nhỏ hơn nút cha không
     if (leftChild < n && arr[leftChild] < arr[smallest])
     {
         smallest = leftChild;
     }
 
+    // Kiểm tra xem nút con phải có nhỏ hơn nút cha không
     if (rightChild < n && arr[rightChild] < arr[smallest])
     {
         smallest = rightChild;
     }
+
+    // Nếu smallest thay đổi (tức là con nhỏ hơn cha), hoán đổi arr[i] với arr[smallest] và tiếp tục gọi đệ quy heapify cho nút con đó
 
     if (smallest != i)
     {
@@ -29,11 +45,14 @@ void heapify(vector<int> &arr, int n, int i)
     }
 }
 
+// Thêm một phần tử vào Heap
 void insertElement(vector<int> &arr, int value)
 {
     int i = arr.size();
-    arr.push_back(value);
+    arr.push_back(value); // Thêm phần tử mới vào cuối Heap
 
+
+    // Duyệt ngược lên trên Heap và hoán đổi phần tử mới với phần tử cha cho đến khi Heap thỏa mã
     while (i != 0 && arr[(i - 1) / 2] > arr[i])
     {
         swap(arr[i], arr[(i - 1) / 2]);
@@ -41,13 +60,15 @@ void insertElement(vector<int> &arr, int value)
     }
 }
 
+// Xóa phần tử nhỏ nhất khỏi Heap
 int extractMin(vector<int> &arr)
 {
     if (arr.empty())
     {
-        return INT_MIN; // Giả sử INT_MIN là giá trị không hợp lệ
+        return INT_MIN; // Trả về giá trị INT_MIN nếu Heap rỗng
     }
 
+    // Nếu Heap chỉ còn 1 phần tử, trả về phần tử đó và xóa nó khỏi Heap
     if (arr.size() == 1)
     {
         int root = arr[0];
@@ -55,12 +76,12 @@ int extractMin(vector<int> &arr)
         return root;
     }
 
-    int root = arr[0];
-    arr[0] = arr.back();
-    arr.pop_back();
-    heapify(arr, arr.size(), 0);
+    int root = arr[0]; // Lưu giá trị của phần tử nhỏ nhất
+    arr[0] = arr.back(); // Di chuyển phần tử cuối cùng của Heap lên đầu Heap
+    arr.pop_back(); // Xóa phần tử cuối cùng
+    heapify(arr, arr.size(), 0); // Gọi heapify để điều chỉnh lại Heap
 
-    return root;
+    return root; // Trả về giá trị của phần tử nhỏ nhất
 }
 
 int main()
@@ -113,6 +134,8 @@ int main()
         return 1;
     }
 
+
+    // Xây dựng Min-Heap từ mảng A
     for (int i = N / 2 - 1; i >= 0; --i)
     {
         heapify(A, N, i);
@@ -130,6 +153,7 @@ int main()
             return 1;
         }
 
+        // Nếu Q = -1, trích xuất phần tử nhỏ nhất khỏi Heap và ghi vào file kết quả
         if (Q == -1)
         {
             int minValue = extractMin(A);
@@ -138,6 +162,7 @@ int main()
                 outputFile << minValue << "\n";
             }
         }
+        // Ngược lại, thêm phần tử Q vào Heap
         else
         {
             insertElement(A, Q);
